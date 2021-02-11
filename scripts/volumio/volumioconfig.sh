@@ -182,6 +182,17 @@ curl -LS 'https://github.com/' -o /dev/null || CURLFAIL=yes
 log " SSL Issues: ${CURLFAIL:-no}"
 [[ $CURLFAIL == yes ]] && log "Fixing ca-certificates" "wrn" && c_rehash
 
+# Custom packages for Volumio
+#TODO THIS SHALL RUN ONLY FOR SOME DEVICES WHERE WE WANT TO INSTALL KIOSK
+[ -f "/install-kiosk.sh" ] && log "Installing kiosk" "info" && bash install-kiosk.sh
+if [[ -d "/volumio/customPkgs" ]] && [[ $(ls /volumio/customPkgs/*.deb 2>/dev/null) ]]; then
+  log "Installing Volumio customPkgs" "info"
+  for deb in /volumio/customPkgs/*.deb; do
+    log "Installing ${deb}"
+    dpkg -i "${deb}"
+  done
+fi
+
 ################
 #Volumio System#---------------------------------------------------
 ################
